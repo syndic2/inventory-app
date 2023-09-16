@@ -14,6 +14,21 @@ const Sidebar = () => {
             Product
           </span>
         </Link>
+        <Link to="/purchase" className="text-white">
+          <span className="px-6 py-2 transition duration-150 hover:bg-cyan-600 rounded">
+            Purchase
+          </span>
+        </Link>
+        <Link to="/sales" className="text-white">
+          <span className="px-6 py-2 transition duration-150 hover:bg-cyan-600 rounded">
+            Sales
+          </span>
+        </Link>
+        <Link to="/history-transaction" className="text-white">
+          <div className="text-center px-6 py-2 transition duration-150 hover:bg-cyan-600 rounded">
+            History Transaction
+          </div>
+        </Link>
       </div>
     </aside>
   );

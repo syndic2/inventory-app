@@ -1,41 +1,27 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 
-interface InputProps {
+interface InputTextAreaProps {
   isLoading?: boolean;
   isDisabled?: boolean;
-  isAutoFocus?: boolean;
-  type: React.HTMLInputTypeAttribute;
   labelText?: string;
-  name: string;
+  name?: string;
   placeholder?: string;
-  min?: number;
-  max?: number;
   value?: any;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   error?: string;
 }
 
-const Input: React.FC<InputProps> = (props: InputProps) => {
+const InputTextArea: React.FC<InputTextAreaProps> = (props: InputTextAreaProps) => {
   const {
     isLoading,
     isDisabled,
-    isAutoFocus,
     labelText,
-    type,
     name,
     placeholder,
-    min,
-    max,
     value,
     onChange,
     error
   } = props;
-
-  const inputElementRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isAutoFocus) inputElementRef.current?.focus();
-  }, [isAutoFocus]);
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -46,7 +32,7 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
             rounded
             animate-pulse
             w-full
-            h-7"
+            h-52"
           >
           </div>
           <div className="
@@ -65,28 +51,25 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
               {labelText}
             </label>
           ) : null}
-          <input
-            ref={inputElementRef}
-            type={type}
+          <textarea
             name={name}
             placeholder={placeholder}
-            min={min}
-            max={max}
+            rows={10}
             disabled={isDisabled}
             value={value}
             onChange={onChange}
             className="
-              outline-0
+              resize-none
               border-2
-              border-neutral-200
-              rounded
               focus:border-cyan-500
+              outline-none
+              rounded
               transition
               duration-200
-              w-full
               p-2
             "
-          />
+          >
+          </textarea>
         </>
       )}
       {error ? (
@@ -98,6 +81,6 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
   );
 };
 
-const InputMemo = React.memo(Input);
+const InputTextAreaMemo = React.memo(InputTextArea);
 
-export default InputMemo;
+export default InputTextAreaMemo;

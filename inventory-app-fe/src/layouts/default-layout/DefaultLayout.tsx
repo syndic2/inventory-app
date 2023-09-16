@@ -10,14 +10,14 @@ const DefaultLayout: React.FC = () => {
   if (!token) return <Navigate to="/login" />
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full">
       <Sidebar />
-      <div className="flex flex-col w-full">
+      <main className="flex flex-col w-full">
         <Header />
         <div className="bg-neutral-100 h-full p-6">
           <Outlet />
         </div>
-      </div>
+      </main>
     </div>
   );
 };

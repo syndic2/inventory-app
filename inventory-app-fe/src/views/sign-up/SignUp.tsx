@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
-import axiosClient from '../../libs/axios-client';
+import AxiosClient from '../../libs/axios-client';
+import SweetAlert from '../../libs/sweet-alert';
 import { useStateContext } from '../../contexts/ContextProvider';
 import useApiIndicator from '../../hooks/api-indicator';
 
@@ -57,32 +58,46 @@ const SignUp: React.FC = () => {
         password_confirmation: confirmPassword
       };
 
-      const { data: { data } } = await axiosClient.post<BaseResponse<RegisterResponse>>('/sign-up', payload);
+      const { data: { message, data } } = await AxiosClient.post<BaseResponse<RegisterResponse>>('/auth/sign-up', payload);
       if (data) {
-        setUser(data.user);
-        saveToken(data.token || null);
-        navigate('/dashboard');
+        SweetAlert.fire({
+          icon: 'success',
+          text: message || '-',
+          didClose: () => {
+            setUser(data.user);
+            saveToken(data.token || null);
+            navigate('/dashboard');
+          }
+        });
       }
     } catch (error) {
-      setIsSubmit(false);
-
-      const err = error as AxiosError<{ errors: any }>;
+      const err = error as AxiosError<{ message: string, errors: any }>;
       const { response } = err;
 
       if (response) {
         const errors = response.data.errors;
 
-        if (response.status === 422) setAuthSignUpErrors(prevState => ({
-          ...prevState,
-          ...errors.name && { name: errors.name[0] },
-          ...errors.email && { email: errors.email[0] },
-          ...errors.username && { username: errors.username[0] },
-          ...errors.password && {
-            password: errors.password[0],
-            confirm_password: errors.password[0]
-          }
-        }));
+        if (response.status === 422) {
+          setAuthSignUpErrors(prevState => ({
+            ...prevState,
+            ...errors.name && { name: errors.name[0] },
+            ...errors.email && { email: errors.email[0] },
+            ...errors.username && { username: errors.username[0] },
+            ...errors.password && {
+              password: errors.password[0],
+              confirm_password: errors.password[0]
+            }
+          }));
+        }
+
+        SweetAlert.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: response.data.message
+        });
       }
+    } finally {
+      setIsSubmit(false);
     }
   }, [authSignUpData, setUser, saveToken]);
 

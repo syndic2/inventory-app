@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
-import axiosClient from '../../libs/axios-client';
+import AxiosClient from '../../libs/axios-client';
+import SweetAlert from '../../libs/sweet-alert';
 import { useStateContext } from '../../contexts/ContextProvider';
 import useApiIndicator from '../../hooks/api-indicator';
 
@@ -46,27 +47,42 @@ const Login: React.FC = () => {
         username: authLoginData?.username,
         password: authLoginData?.password
       };
-      const { data: { data } } = await axiosClient.post<BaseResponse<LoginResponse>>('/login', payload);
+      const { data: { message, data } } = await AxiosClient.post<BaseResponse<LoginResponse>>('/auth/login', payload);
       if (data) {
-        setUser(data.user);
-        saveToken(data.token || null);
-        navigate('/dashboard');
+        SweetAlert.fire({
+          icon: 'success',
+          text: message || '-',
+          didClose: () => {
+            setUser(data.user);
+            saveToken(data.token || null);
+            setIsSubmit(false);
+            navigate('/dashboard');
+          }
+        });
       }
     } catch (error: any) {
-      setIsSubmit(false);
-
-      const err = error as AxiosError<{ errors: any }>;
+      const err = error as AxiosError<{ message: string, errors: any }>;
       const { response } = err;
 
       if (response) {
         if (response.status === 422) {
+          const { errors } = response.data;
+
           setAuthLoginErrors(prevState => ({
             ...prevState,
-            ...response.data.errors.username && { username: response.data.errors.username },
-            ...response.data.errors.password && { password: response.data.errors.password }
-          }))
+            ...errors.username && { username: response.data.errors.username },
+            ...errors.password && { password: response.data.errors.password }
+          }));
         }
+
+        SweetAlert.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: response.data.message
+        });
       }
+    } finally {
+      setIsSubmit(false);
     }
   }, [authLoginData, setUser, saveToken, navigate]);
 

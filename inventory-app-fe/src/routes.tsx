@@ -7,6 +7,7 @@ import Login from './views/login/Login';
 import SignUp from './views/sign-up/SignUp';
 import Dashboard from './views/dashboard/Dashboard';
 import Product from './views/product/Product';
+import AddEditProduct from './views/product/add-edit-product/AddEditProduct';
 import NotFound from './views/not-found/NotFound';
 
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: '/product',
         element: <Product />
+      },
+      {
+        path: '/product/add',
+        element: <AddEditProduct />
       }
     ]
   },
