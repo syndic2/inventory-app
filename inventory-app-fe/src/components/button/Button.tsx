@@ -6,6 +6,7 @@ interface ButtonProps {
   isDisabled?: boolean;
   label: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
@@ -13,14 +14,15 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     isLoading,
     isDisabled,
     label,
-    onClick
+    onClick,
+    className
   } = props;
 
   return (
     <button
       disabled={isDisabled}
       onClick={onClick}
-      className="
+      className={`
         bg-cyan-500
         text-white rounded
         outline-none
@@ -28,7 +30,8 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
         transition
         duration-150
         p-3
-      "
+        ${className}
+      `}
     >
       {isLoading ? (
         <Spinner className="m-auto" />

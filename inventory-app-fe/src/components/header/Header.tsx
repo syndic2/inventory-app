@@ -1,17 +1,25 @@
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 import AxiosClient from '../../libs/axios-client';
+import SweetAlert from '../../libs/sweet-alert';
 import { useStateContext } from '../../contexts/ContextProvider';
 import useApiIndicator from '../../hooks/api-indicator';
-
 import { BaseResponse } from '../../api/commons/base-response';
 import { GetCurrentUserResponse } from '../../api/contracts/get-current-user/get-current-user.res';
+
+import ButtonMemo from '../button/Button';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user, setUser, removeToken } = useStateContext();
-  const { isFetch, setIsFetch } = useApiIndicator();
+  const {
+    isFetch,
+    setIsFetch,
+    isSubmit,
+    setIsSubmit
+  } = useApiIndicator();
 
   const fetchCurrentUser = useCallback(async () => {
     try {
@@ -35,9 +43,29 @@ const Header: React.FC = () => {
     fetchCurrentUser();
   }, []);
 
-  const onSignOutClick = useCallback(() => {
-    removeToken();
-    navigate('/login');
+  const onSignOutClick = useCallback(async () => {
+    try {
+      setIsSubmit(true);
+
+      const { data: { status } } = await AxiosClient.post<BaseResponse>('/auth/logout');
+      if (status) {
+        removeToken();
+        navigate('/login');
+      }
+    } catch (error: any) {
+      const errors = error as AxiosError<BaseResponse>;
+      const { response } = errors;
+
+      if (response) {
+        SweetAlert.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: response.data.message || 'Something went wrong. PLease report this to admin'
+        });
+      }
+    } finally {
+      setIsSubmit(false);
+    }
   }, [navigate, removeToken]);
 
   return (
@@ -59,20 +87,12 @@ const Header: React.FC = () => {
             Hi, {user?.name || '-'}!
           </span>
         )}
-        <button
+        <ButtonMemo
+          isLoading={isSubmit}
+          isDisabled={isSubmit}
           onClick={onSignOutClick}
-          className="
-            bg-cyan-500
-            text-white
-            text-sm
-            rounded
-            px-3 py-2
-            transition
-            duration-150
-            hover:opacity-70
-          ">
-          Sign Out
-        </button>
+          label={'Sign Out'}
+        />
       </div>
     </div>
   );

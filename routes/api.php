@@ -29,9 +29,11 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('users')->group(function () {
-    Route::get('/current', [UserController::class, 'getCurrentUser']);
+    Route::get('/current', [UserController::class, 'getCurrentUser'])->middleware('auth:sanctum');
 });
 
 Route::prefix('products')->group(function () {
-    Route::post('/insert-product', [ProductController::class, 'insertProduct']);
+    Route::get('/', [ProductController::class, 'index']);
+    Route::post('/', [ProductController::class, 'insert']);
+    Route::delete('/{product_id}', [ProductController::class, 'delete']);
 });

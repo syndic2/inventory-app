@@ -4,78 +4,102 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 
 use App\Models\User;
+use Exception;
 
 class AuthController extends Controller
 {
     public function signUp(SignUpRequest $request)
     {
-        $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        // /** @var User */
-        // $user = User::create([
-        //     'name' => $data['name'],
-        //     'email' => $data['email'],
-        //     'password' => bcrypt($data['password'])
-        // ]);
-        // $token = $user->createToken('main')->plainTextToken;
+            /** @var User */
+            $user = User::create([
+                'user_id' => Str::uuid()->toString(),
+                'name' => $data['name'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password'])
+            ]);
+            $token = $user->createToken('main')->plainTextToken;
+        } catch (Exception $e) {
+            return response([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
 
         return response([
-            'status' => false,
+            'status' => true,
             'message' => 'Account has been created successfully',
             'data' => [
-                'user' => [
-                    'name' => 'John Doe',
-                    'email' => 'johndoe@mail.com',
-                    'username' => 'johndoe',
-                    'password' => 'password'
-                ],
-                'token' => 'ACCESS_TOKEN'
+                'user' => $user,
+                'token' => $token
             ]
         ]);
     }
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->validated();
-        // if (!Auth::attempt($credentials)) {
-        //     return response([
-        //         'status' => false,
-        //         'message' => 'Provided username or password is incorrect.',
-        //         'data' => null
-        //     ]);
-        // }
+        try {
+            $credentials = $request->validated();
+            if (!Auth::attempt([
+                'username' => $credentials['username'],
+                'password' => $credentials['password']
+            ])) {
+                return response([
+                    'status' => false,
+                    'message' => 'Provided username or password is incorrect.',
+                    'data' => null
+                ], 401);
+            }
 
-        // /** @var User */
-        // $user = Auth::user();
-        // $token = $user->createToken('main')->plainTextToken;
+            /** @var User */
+            $user = Auth::user();
+            $token = $user->createToken('main')->plainTextToken;
+        } catch (Exception $e) {
+            return response([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
 
         return response([
-            'status' => false,
+            'status' => true,
             'message' => 'Login successfully',
             'data' => [
-                'user' => [
-                    'name' => 'John Doe',
-                    'email' => 'johndoe@mail.com',
-                    'username' => 'johndoe',
-                    'password' => 'password'
-                ],
-                'token' => 'ACCESS_TOKEN'
+                'user' => $user,
+                'token' => $token
             ]
         ]);
     }
 
     public function logout(Request $request)
     {
-        // /** @var User */
-        // $user = $request->user();
-        // $user->currentAccessToken()->delete();
+        try {
+            $request->user('sanctum')->currentAccessToken()->delete();
+        } catch (Exception $e) {
+            return response([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
 
-        return response('', 204);
+        return response([
+            'status' => true,
+            'message' => 'User has been successfully logged out',
+            'data' => null
+        ], 200);
     }
 }

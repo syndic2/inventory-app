@@ -34,7 +34,7 @@ const Login: React.FC = () => {
   const onInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthLoginData(prevState => ({
       ...prevState,
-      [event.target.name]: [event.target.value]
+      [event.target.name]: event.target.value
     }));
   }, []);
 

@@ -24,7 +24,8 @@ class InsertUpdateProductRequest extends FormRequest
         return [
             'product_name' => 'required',
             'product_sku' => 'required',
-            'product_image' => 'mimes:jpeg,png,bmp,tiff|max:2096',
+            'product_desc' => 'sometimes|nullable',
+            'product_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2096',
             'qty' => 'required|numeric',
             'sell_price' => 'required|numeric'
         ];

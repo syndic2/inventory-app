@@ -57,13 +57,12 @@ const AddEditProduct: React.FC = () => {
       formData.append('product_name', addEditProductData?.product_name || '');
       formData.append('product_sku', addEditProductData?.product_sku || '');
       formData.append('product_desc', addEditProductData?.product_desc || '');
-      addEditProductData?.product_image && formData.append('product_image_path', addEditProductData?.product_image);
+      addEditProductData?.product_image && formData.append('product_image', addEditProductData?.product_image);
       formData.append('qty', addEditProductData?.qty?.toString() || '');
       formData.append('sell_price', addEditProductData?.sell_price?.toString() || '');
 
-      const { data: { status, message } } = await AxiosClient.post<BaseResponse>('/products/insert-product', formData, {
+      const { data: { status, message } } = await AxiosClient.post<BaseResponse>('/products', formData, {
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'multipart/form-data'
         }
       });
@@ -97,7 +96,7 @@ const AddEditProduct: React.FC = () => {
         SweetAlert.fire({
           icon: 'error',
           title: 'Oops...',
-          text: message || 'Something went wrong'
+          text: message || 'Something went wrong. Please report this to admin'
         });
       }
     } finally {
