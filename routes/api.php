@@ -32,8 +32,12 @@ Route::prefix('users')->group(function () {
     Route::get('/current', [UserController::class, 'getCurrentUser'])->middleware('auth:sanctum');
 });
 
-Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::post('/', [ProductController::class, 'insert']);
-    Route::delete('/{product_id}', [ProductController::class, 'delete']);
-});
+Route::prefix('products')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{product_id}', [ProductController::class, 'detail']);
+        Route::post('/', [ProductController::class, 'insert']);
+        Route::put('/{product_id}', [ProductController::class, 'update']);
+        Route::delete('/{product_id}', [ProductController::class, 'delete']);
+    });

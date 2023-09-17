@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
 import AxiosClient from '../../libs/axios-client';
 import SweetAlert from '../../libs/sweet-alert';
 import useApiIndicator from '../../hooks/api-indicator';
 import { BaseResponse } from '../../api/commons/base-response';
-import { GetPaginatedProductsRes } from '../../api/contracts/get-paginated-products/GetPaginatedProducts.res';
+import { GetPaginatedProductsResponse } from '../../api/contracts/get-paginated-products/GetPaginatedProducts.res';
 import { IProduct } from '../../interfaces/product.interface';
 import { toDateTime } from '../../helpers/moment';
 
@@ -25,6 +25,7 @@ const tableTitles = [
 ];
 
 const Product: React.FC = () => {
+  const navigate = useNavigate();
   const {
     isFetch,
     setIsFetch,
@@ -37,7 +38,7 @@ const Product: React.FC = () => {
     try {
       setIsFetch(true);
 
-      const { data: { data } } = await AxiosClient.get<BaseResponse<GetPaginatedProductsRes>>('/products');
+      const { data: { data } } = await AxiosClient.get<BaseResponse<GetPaginatedProductsResponse>>('/products');
       if (data) {
         setProducts(data.data);
       }
@@ -58,6 +59,7 @@ const Product: React.FC = () => {
       title: 'Oops...',
       text: 'Something went wrong. Please report this to admin'
     });
+    navigate(`/product/edit/${productId}`);
   }, []);
 
   const onDeleteProductClick = useCallback(async (productId?: string) => {

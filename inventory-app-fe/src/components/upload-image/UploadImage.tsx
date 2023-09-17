@@ -5,6 +5,7 @@ interface UploadImageProps {
   isResetPreviewImage?: boolean;
   setIsResetPreviewImage?: React.Dispatch<React.SetStateAction<boolean>>;
   labelText?: string;
+  value?: string;
   placeholder?: string;
   onUploadImageCallback: (image: File) => void;
   error?: string;
@@ -16,6 +17,7 @@ const UploadImage: React.FC<UploadImageProps> = (props: UploadImageProps) => {
     isResetPreviewImage,
     setIsResetPreviewImage,
     labelText,
+    value,
     placeholder = 'Please upload your image',
     onUploadImageCallback,
     error
@@ -27,6 +29,10 @@ const UploadImage: React.FC<UploadImageProps> = (props: UploadImageProps) => {
   useEffect(() => {
     if (isResetPreviewImage) setPreviewImagePath(undefined);
   }, [isResetPreviewImage]);
+
+  useEffect(() => {
+    if (value) setPreviewImagePath(value);
+  }, [value]);
 
   const onUploadImageClick = useCallback(() => {
     inputFileElementRef.current?.click();

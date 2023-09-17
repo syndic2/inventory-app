@@ -1,12 +1,10 @@
 import React from 'react';
 import Spinner from '../../assets/svg/Spinner';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   isDisabled?: boolean;
   label: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
@@ -14,12 +12,14 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     isLoading,
     isDisabled,
     label,
+    type,
     onClick,
     className
   } = props;
 
   return (
     <button
+      type={type}
       disabled={isDisabled}
       onClick={onClick}
       className={`
