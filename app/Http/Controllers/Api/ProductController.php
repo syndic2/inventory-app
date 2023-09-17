@@ -15,10 +15,20 @@ class ProductController extends Controller
 {
     public function index()
     {
+        try {
+            $result = Product::orderBy('product_name', 'asc')->paginate(10);
+        } catch (Exception $e) {
+            return response([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+
         return response([
             'status' => true,
             'message' => null,
-            'data' => Product::orderBy('product_name', 'asc')->paginate(10)
+            'data' => $result
         ]);
     }
 

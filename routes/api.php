@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PurchaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +29,11 @@ Route::prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::prefix('users')->group(function () {
-    Route::get('/current', [UserController::class, 'getCurrentUser'])->middleware('auth:sanctum');
-});
+Route::prefix('users')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/current', [UserController::class, 'getCurrentUser']);
+    });
 
 Route::prefix('products')
     ->middleware('auth:sanctum')
@@ -40,4 +43,10 @@ Route::prefix('products')
         Route::post('/', [ProductController::class, 'insert']);
         Route::put('/{product_id}', [ProductController::class, 'update']);
         Route::delete('/{product_id}', [ProductController::class, 'delete']);
+    });
+
+Route::prefix('purchases')
+    // ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/', [PurchaseController::class, 'index']);
     });

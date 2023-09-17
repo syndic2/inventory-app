@@ -6,7 +6,7 @@ import AxiosClient from '../../libs/axios-client';
 import SweetAlert from '../../libs/sweet-alert';
 import useApiIndicator from '../../hooks/api-indicator';
 import { BaseResponse } from '../../api/commons/base-response';
-import { GetPaginatedProductsResponse } from '../../api/contracts/get-paginated-products/GetPaginatedProducts.res';
+import { GetProductsResponse } from '../../api/contracts/get-products/GetProducts.res';
 import { IProduct } from '../../interfaces/product.interface';
 import { toDateTime } from '../../helpers/moment';
 
@@ -16,9 +16,9 @@ import TableDataMemo from '../../components/table/table-data/TableData';
 import ButtonMemo from '../../components/button/Button';
 
 const tableTitles = [
-  'ID',
   'Product Name',
   'Product SKU',
+  'Quantity',
   'Created At',
   'Last Updated At',
   'Action'
@@ -38,7 +38,7 @@ const Product: React.FC = () => {
     try {
       setIsFetch(true);
 
-      const { data: { data } } = await AxiosClient.get<BaseResponse<GetPaginatedProductsResponse>>('/products');
+      const { data: { data } } = await AxiosClient.get<BaseResponse<GetProductsResponse>>('/products');
       if (data) {
         setProducts(data.data);
       }
@@ -120,19 +120,19 @@ const Product: React.FC = () => {
         isLoading={isFetch || isSubmit}
         titles={tableTitles}
       >
-        {products.map((product, index) => (
+        {products.map(product => (
           <TableRowMemo
             key={`product-table-item-${product.product_id}`}
             className="border-b dark:bg-gray-800 dark:border-gray-700"
           >
             <TableDataMemo className="text-center p-3">
-              {index + 1}
-            </TableDataMemo>
-            <TableDataMemo className="text-center p-3">
               {product.product_name || '-'}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
               {product.product_sku || '-'}
+            </TableDataMemo>
+            <TableDataMemo className="text-center p-3">
+              {product.qty || '-'}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
               {toDateTime(product.created_at, 'DD MMM YYYY hh:mm:ss')}

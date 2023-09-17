@@ -1,8 +1,5 @@
-import { IProduct } from '../../../interfaces/product.interface';
-
-export interface GetPaginatedProductsResponse {
+export interface PaginationResponse {
   current_page: number;
-  data: IProduct[];
   first_page_url: string | null;
   from: number;
   last_page: number;
