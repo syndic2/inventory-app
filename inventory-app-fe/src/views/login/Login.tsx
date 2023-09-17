@@ -98,9 +98,10 @@ const Login: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Username'}
           type={'text'}
           name={'username'}
-          placeholder={'Username'}
+          placeholder={'Fill your username here'}
           value={authLoginData?.username}
           onChange={onInputChange}
           error={authLoginErrors?.username}
@@ -110,9 +111,10 @@ const Login: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Password'}
           type={'password'}
           name={'password'}
-          placeholder={'Password'}
+          placeholder={'Fill your password here'}
           value={authLoginData?.password}
           onChange={onInputChange}
           error={authLoginErrors?.password}

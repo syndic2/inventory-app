@@ -113,9 +113,10 @@ const SignUp: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Name'}
           type={'text'}
           name={'name'}
-          placeholder={'Name'}
+          placeholder={'Fill your name'}
           value={authSignUpData.name}
           onChange={onInputChange}
           error={authSignUpErrors?.name}
@@ -125,9 +126,10 @@ const SignUp: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Email'}
           type={'text'}
           name={'email'}
-          placeholder={'Email'}
+          placeholder={'Fill your email'}
           value={authSignUpData.email}
           onChange={onInputChange}
           error={authSignUpErrors?.email}
@@ -137,9 +139,10 @@ const SignUp: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Username'}
           type={'text'}
           name={'username'}
-          placeholder={'Username'}
+          placeholder={'Fill your username'}
           value={authSignUpData.username}
           onChange={onInputChange}
           error={authSignUpErrors?.username}
@@ -149,9 +152,10 @@ const SignUp: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Password'}
           type={'password'}
           name={'password'}
-          placeholder={'Password'}
+          placeholder={'Fill your password'}
           value={authSignUpData.password}
           onChange={onInputChange}
           error={authSignUpErrors?.password}
@@ -161,9 +165,10 @@ const SignUp: React.FC = () => {
         <InputMemo
           isLoading={isSubmit}
           isDisabled={isSubmit}
+          labelText={'Confirm Password'}
           type={'password'}
           name={'confirmPassword'}
-          placeholder={'Confirm Password'}
+          placeholder={'Confirm your password'}
           value={authSignUpData.confirmPassword}
           onChange={onInputChange}
           error={authSignUpErrors?.confirm_password}

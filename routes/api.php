@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PurchaseController;
+use App\Http\Controllers\Api\SalesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +47,13 @@ Route::prefix('products')
     });
 
 Route::prefix('purchases')
-    // ->middleware('auth:sanctum')
+    ->middleware('auth:sanctum')
     ->group(function () {
         Route::get('/', [PurchaseController::class, 'index']);
+    });
+
+Route::prefix('sales')
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/', [SalesController::class, 'index']);
     });

@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import AxiosClient from '../../libs/axios-client';
 import useApiIndicator from '../../hooks/api-indicator';
 import { BaseResponse } from '../../api/commons/base-response';
-import { GetPurchasesResponse } from '../../api/contracts/get-purchases/get-purchases.res';
-import { IPurchase } from '../../interfaces/purchase.interface';
+import { GetSalesResponse } from '../../api/contracts/get-sale/get-sales.res';
+import { ISale } from '../../interfaces/sale.interface';
 import { toDateTime } from '../../helpers/moment';
 import { toRupiahID } from '../../helpers/number-format';
 
@@ -14,25 +14,25 @@ import TableRowMemo from '../../components/table/table-row/TableRow';
 import TableDataMemo from '../../components/table/table-data/TableData';
 
 const tableTitles = [
-  'Purchase Date & Time',
-  'Supplier Name',
+  'Sale Date & Time',
+  'Buyer Name',
   'Total Product',
   'Total Quantity',
   'Grand Total',
   'Created At'
 ];
 
-const Purchase: React.FC = () => {
+const Sale: React.FC = () => {
   const { isFetch, setIsFetch } = useApiIndicator();
-  const [purchases, setPurchases] = useState<IPurchase[]>([]);
+  const [sales, setSales] = useState<ISale[]>([]);
 
-  const fetchPurchases = useCallback(async () => {
+  const fetchSales = useCallback(async () => {
     try {
       setIsFetch(true);
 
-      const { data: { data } } = await AxiosClient.get<BaseResponse<GetPurchasesResponse>>('/purchases');
+      const { data: { data } } = await AxiosClient.get<BaseResponse<GetSalesResponse>>('/sales');
       if (data) {
-        setPurchases(data.data);
+        setSales(data.data);
       }
     } catch (error: any) {
       console.error(error);
@@ -42,17 +42,17 @@ const Purchase: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchPurchases();
+    fetchSales();
   }, []);
 
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex justify-between items-center">
         <span className="text-2xl font-bold">
-          Purchases
+          Sales
         </span>
         <Link
-          to="/purchase/add"
+          to="/sale/add"
           className="
             bg-green-500
             text-white
@@ -63,35 +63,35 @@ const Purchase: React.FC = () => {
             duration-200
             p-2
           ">
-          Add Purchase
+          Add Sale
         </Link>
       </div>
       <Table
         isLoading={isFetch}
         titles={tableTitles}
       >
-        {purchases.map(purchase => (
+        {sales.map(sale => (
           <TableRowMemo
-            key={`purchase-table-item-${purchase.purchase_id}`}
+            key={`sale-table-item-${sale.sale_id}`}
             className="border-b dark:bg-gray-800 dark:border-gray-700"
           >
             <TableDataMemo className="text-center p-3">
-              {toDateTime(purchase.purchase_date_time, 'DD MMM YYYY hh:mm:ss')}
+              {toDateTime(sale.sale_date_time, 'DD MMM YYYY hh:mm:ss')}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
-              {purchase.supplier_name || '-'}
+              {sale.buyer_name || '-'}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
-              {purchase.total_product || '-'}
+              {sale.total_product || '-'}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
-              {purchase.total_qty || '-'}
+              {sale.total_qty || '-'}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
-              {toRupiahID(purchase.grand_total || 0) || '-'}
+              {toRupiahID(sale.grand_total || 0) || '-'}
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
-              {toDateTime(purchase.created_at, 'DD MMM YYYY hh:mm:ss')}
+              {toDateTime(sale.created_at, 'DD MMM YYYY hh:mm:ss')}
             </TableDataMemo>
           </TableRowMemo>
         ))}
@@ -100,4 +100,4 @@ const Purchase: React.FC = () => {
   );
 };
 
-export default Purchase;
+export default Sale;

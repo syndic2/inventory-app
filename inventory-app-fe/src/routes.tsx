@@ -10,6 +10,8 @@ import Product from './views/product/Product';
 import AddEditProduct from './views/product/add-edit-product/AddEditProduct';
 import Purchase from './views/purchase/Purchase';
 import AddPurchase from './views/purchase/add-purchase/AddPurchase';
+import Sale from './views/sale/Sale';
+import AddSale from './views/sale/add-sale/AddSale';
 import NotFound from './views/not-found/NotFound';
 
 const router = createBrowserRouter([
@@ -58,6 +60,14 @@ const router = createBrowserRouter([
       {
         path: '/purchase/add',
         element: <AddPurchase />
+      },
+      {
+        path: '/sale',
+        element: <Sale />
+      },
+      {
+        path: '/sale/add',
+        element: <AddSale />
       }
     ]
   },

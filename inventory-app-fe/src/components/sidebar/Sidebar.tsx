@@ -19,9 +19,9 @@ const Sidebar = () => {
             Purchase
           </span>
         </Link>
-        <Link to="/sales" className="text-white">
+        <Link to="/sale" className="text-white">
           <span className="px-6 py-2 transition duration-150 hover:bg-cyan-600 rounded">
-            Sales
+            Sale
           </span>
         </Link>
         <Link to="/history-transaction" className="text-white">
