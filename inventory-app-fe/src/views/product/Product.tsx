@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
@@ -13,6 +13,7 @@ import { toDateTime } from '../../helpers/moment';
 import Table from '../../components/table/Table';
 import TableRowMemo from '../../components/table/table-row/TableRow';
 import TableDataMemo from '../../components/table/table-data/TableData';
+import { PaginatorProps } from '../../components/table/paginator/Paginator';
 import ButtonMemo from '../../components/button/Button';
 
 const tableTitles = [
@@ -33,14 +34,21 @@ const Product: React.FC = () => {
     setIsSubmit
   } = useApiIndicator();
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [paginationData, setPaginationData] = useState<PaginatorProps>({ currentPage: 0 });
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(async (url: string = '/products') => {
     try {
       setIsFetch(true);
 
-      const { data: { data } } = await AxiosClient.get<BaseResponse<GetProductsResponse>>('/products');
+      const { data: { data } } = await AxiosClient.get<BaseResponse<GetProductsResponse>>(url);
       if (data) {
         setProducts(data.data);
+        setPaginationData({
+          currentPage: data.current_page,
+          totalPage: data.total / data.per_page,
+          ...data.prev_page_url && { prevUrl: data.prev_page_url },
+          ...data.next_page_url && { nextUrl: data.next_page_url },
+        });
       }
     } catch (error: any) {
       console.error(error);
@@ -52,6 +60,22 @@ const Product: React.FC = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const onPrevNextPaginatorClick = useCallback((url: string) => {
+    fetchProducts(url);
+  }, []);
+
+  const onPagePaginatorClick = useCallback((page: number) => {
+    fetchProducts(`/products?page=${page}`);
+  }, []);
+
+  const paginator = useMemo((): PaginatorProps => {
+    return {
+      ...paginationData,
+      onPrevNextClick: onPrevNextPaginatorClick,
+      onPageClick: onPagePaginatorClick
+    };
+  }, [paginationData]);
 
   const onEditProductClick = useCallback(async (productId?: string) => {
     if (!productId) SweetAlert.fire({
@@ -119,6 +143,7 @@ const Product: React.FC = () => {
       <Table
         isLoading={isFetch || isSubmit}
         titles={tableTitles}
+        paginator={paginator}
       >
         {products.map(product => (
           <TableRowMemo
