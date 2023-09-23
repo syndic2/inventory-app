@@ -4,7 +4,7 @@ This is simple web based inventory app
 
 ## Tech Stacks
 
-- `React.js`
+- `React + Typescript`
 - `Tailwind CSS`
 - `Laravel`
 - `MySQL`
