@@ -12,6 +12,7 @@ import Purchase from './views/purchase/Purchase';
 import AddPurchase from './views/purchase/add-purchase/AddPurchase';
 import Sale from './views/sale/Sale';
 import AddSale from './views/sale/add-sale/AddSale';
+import HistoryTransaction from './views/history-transaction/HistoryTransaction';
 import NotFound from './views/not-found/NotFound';
 
 const router = createBrowserRouter([
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: '/sale/add',
         element: <AddSale />
+      },
+      {
+        path: '/history-transaction',
+        element: <HistoryTransaction />
       }
     ]
   },

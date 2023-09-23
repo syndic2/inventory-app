@@ -1,5 +1,11 @@
 import { IAudit } from './audit.interface';
 
+export interface IPurchaseProduct {
+  product_id?: string;
+  qty?: number;
+  buy_price?: number;
+}
+
 export interface IPurchase extends IAudit {
   purchase_id?: string;
   purchase_date_time?: string;

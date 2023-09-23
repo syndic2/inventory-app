@@ -32,6 +32,31 @@ class ProductController extends Controller
         ]);
     }
 
+    public function select()
+    {
+        try {
+            $products = Product::orderBy('product_name', 'asc')->get();
+            $products = $products->map(function ($product) {
+                return [
+                    'label' => $product->product_name,
+                    'value' => $product->product_id
+                ];
+            });
+        } catch (Exception $e) {
+            return response([
+                'status' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+
+        return response([
+            'status' => true,
+            'message' => null,
+            'data' => $products
+        ]);
+    }
+
     public function detail($id)
     {
         try {

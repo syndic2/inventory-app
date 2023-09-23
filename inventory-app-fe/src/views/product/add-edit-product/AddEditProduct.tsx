@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { AiOutlineArrowLeft } from 'react-icons/ai';
 
 import AxiosClient from '../../../libs/axios-client';
 import SweetAlert from '../../../libs/sweet-alert';
@@ -26,6 +27,8 @@ interface AddEditProductDataProps {
 
 const AddEditProduct: React.FC = () => {
   const { product_id } = useParams<{ product_id: string }>();
+  const navigate = useNavigate();
+
   const {
     isFetch,
     setIsFetch,
@@ -150,11 +153,22 @@ const AddEditProduct: React.FC = () => {
     }
   }, [product_id, addEditProductData]);
 
+  const onBackClick = useCallback(() => {
+    navigate('/product');
+  }, []);
+
   return (
-    <div className="flex flex-col gap-y-4">
-      <span className="text-2xl font-bold">
-        {product_id ? 'Edit Product' : 'New Product'}
-      </span>
+    <div className="flex flex-col gap-y-6">
+      <div className="flex items-center gap-x-4">
+        <AiOutlineArrowLeft
+          onClick={onBackClick}
+          size={20}
+          className="text-cyan-500 cursor-pointer"
+        />
+        <span className="text-2xl font-bold">
+          {product_id ? 'Edit Product' : 'New Product'}
+        </span>
+      </div>
       <form
         onSubmit={onSubmitProduct}
         className="bg-white flex flex-col gap-y-4 rounded-md w-full p-6"

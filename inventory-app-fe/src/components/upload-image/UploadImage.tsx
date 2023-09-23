@@ -44,7 +44,7 @@ const UploadImage: React.FC<UploadImageProps> = (props: UploadImageProps) => {
       setPreviewImagePath(URL.createObjectURL(event.target.files[0]));
       onUploadImageCallback(event.target.files[0]);
     }
-    inputFileElementRef.current = null;
+    // inputFileElementRef.current = null;
   }, [onUploadImageCallback]);
 
   return (

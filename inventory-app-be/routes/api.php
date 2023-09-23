@@ -40,6 +40,7 @@ Route::prefix('products')
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::get('/', [ProductController::class, 'index']);
+        Route::get('/select', [ProductController::class, 'select']);
         Route::get('/{product_id}', [ProductController::class, 'detail']);
         Route::post('/', [ProductController::class, 'insert']);
         Route::put('/{product_id}', [ProductController::class, 'update']);
@@ -50,6 +51,7 @@ Route::prefix('purchases')
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::get('/', [PurchaseController::class, 'index']);
+        Route::post('/', [PurchaseController::class, 'insert']);
     });
 
 Route::prefix('sales')

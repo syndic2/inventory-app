@@ -10,6 +10,8 @@ interface InputProps {
   placeholder?: string;
   min?: number;
   max?: number;
+  containerClassName?: string;
+  inputClassName?: string;
   value?: any;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
@@ -26,6 +28,8 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
     placeholder,
     min,
     max,
+    containerClassName,
+    inputClassName,
     value,
     onChange,
     error
@@ -38,7 +42,7 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
   }, [isAutoFocus]);
 
   return (
-    <div className="flex flex-col gap-y-2">
+    <div className={`flex flex-col gap-y-2 ${containerClassName}`}>
       {isLoading ? (
         <>
           <div className="
@@ -75,7 +79,7 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
             disabled={isDisabled}
             value={value}
             onChange={onChange}
-            className="
+            className={`
               outline-0
               border-2
               border-neutral-200
@@ -85,7 +89,8 @@ const Input: React.FC<InputProps> = (props: InputProps) => {
               duration-200
               w-full
               p-2
-            "
+              ${inputClassName}
+            `}
           />
         </>
       )}

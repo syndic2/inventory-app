@@ -13,7 +13,7 @@ export interface PaginatorProps {
 const Paginator: React.FC<PaginatorProps> = (props: PaginatorProps) => {
   const {
     currentPage,
-    totalPage,
+    totalPage = 1,
     prevUrl,
     nextUrl,
     onPrevNextClick,
@@ -31,6 +31,8 @@ const Paginator: React.FC<PaginatorProps> = (props: PaginatorProps) => {
   const handlePageClick = useCallback((page: number) => {
     if (onPageClick) onPageClick(page);
   }, [onPageClick]);
+
+  console.log('total page', totalPage);
 
   return (
     <div className="flex items-center gap-x-6">

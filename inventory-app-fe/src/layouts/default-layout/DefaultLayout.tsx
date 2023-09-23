@@ -14,7 +14,7 @@ const DefaultLayout: React.FC = () => {
       <Sidebar />
       <main className="flex flex-col w-full">
         <Header />
-        <div className="bg-neutral-100 h-full p-6">
+        <div className="bg-neutral-100 p-6">
           <Outlet />
         </div>
       </main>

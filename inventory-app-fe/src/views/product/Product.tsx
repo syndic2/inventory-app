@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { AiOutlinePlus, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 import AxiosClient from '../../libs/axios-client';
 import SweetAlert from '../../libs/sweet-alert';
@@ -14,7 +15,6 @@ import Table from '../../components/table/Table';
 import TableRowMemo from '../../components/table/table-row/TableRow';
 import TableDataMemo from '../../components/table/table-data/TableData';
 import { PaginatorProps } from '../../components/table/paginator/Paginator';
-import ButtonMemo from '../../components/button/Button';
 
 const tableTitles = [
   'Product Name',
@@ -125,19 +125,26 @@ const Product: React.FC = () => {
         <span className="text-2xl font-bold">
           Products
         </span>
-        <Link
-          to="/product/add"
-          className="
+        <Link to="/product/add">
+          <div className="
+            flex 
+            items-center 
+            gap-x-2
             bg-green-500
-            text-white
-            text-sm
             rounded
             hover:bg-green-600
             transition
             duration-200
-            p-2
+            p-3
           ">
-          Add Product
+            <AiOutlinePlus
+              size={18}
+              className="text-white"
+            />
+            <span className="text-white text-sm">
+              Add Product
+            </span>
+          </div>
         </Link>
       </div>
       <Table
@@ -165,16 +172,16 @@ const Product: React.FC = () => {
             <TableDataMemo className="text-center p-3">
               {toDateTime(product.updated_at, 'DD MMM YYYY hh:mm:ss')}
             </TableDataMemo>
-            <TableDataMemo className="flex justify-center items-center gap-x-2 p-3">
-              <ButtonMemo
-                label={'Edit'}
+            <TableDataMemo className="flex justify-center items-center gap-x-4 p-3">
+              <AiFillEdit
                 onClick={() => onEditProductClick(product.product_id)}
-                className="bg-green-500 text-sm hover:bg-green-600 px-2 py-1"
+                size={20}
+                className="text-green-500 cursor-pointer hover:text-green-600"
               />
-              <ButtonMemo
-                label={'Delete'}
+              <AiFillDelete
                 onClick={() => onDeleteProductClick(product.product_id)}
-                className="bg-red-500 text-sm hover:bg-red-600 px-2 py-1"
+                size={20}
+                className="text-red-500 cursor-pointer hover:text-red-600"
               />
             </TableDataMemo>
           </TableRowMemo>
