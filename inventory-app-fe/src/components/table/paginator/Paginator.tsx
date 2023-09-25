@@ -32,8 +32,6 @@ const Paginator: React.FC<PaginatorProps> = (props: PaginatorProps) => {
     if (onPageClick) onPageClick(page);
   }, [onPageClick]);
 
-  console.log('total page', totalPage);
-
   return (
     <div className="flex items-center gap-x-6">
       <BsChevronDoubleLeft

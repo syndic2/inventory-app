@@ -4,21 +4,28 @@ import { AiFillPlusCircle, AiFillDelete } from 'react-icons/ai';
 
 import AxiosClient from '../../../../../libs/axios-client';
 import useApiIndicator from '../../../../../hooks/api-indicator';
+import { toRupiahID } from '../../../../../helpers/number-format';
 import { IPurchaseProduct } from '../../../../../interfaces/purchase.interface';
 import { BaseResponse } from '../../../../../api/commons/base-response';
 import { GetProductsSelectResponse } from '../../../../../api/contracts/get-products-select/get-products-select.res';
+import { AddPurchaseProductsErrors } from '../../../../../api/contracts/add-purchase/add-purchase.error';
 
 import { AddPurchaseDataProps } from '../../AddPurchase';
 import LabelMemo from '../../../../../components/label/Label';
+import ErrorLabelMemo from '../../../../../components/error-label/ErrorLabel';
 import InputMemo from '../../../../../components/input/Input';
 
 interface AddPurchaseProductProps {
+  isSubmit?: boolean;
   setAddPurchaseData: React.Dispatch<React.SetStateAction<AddPurchaseDataProps>>;
+  errors?: AddPurchaseProductsErrors[];
 }
 
 const AddPurchaseProduct: React.FC<AddPurchaseProductProps> = (props: AddPurchaseProductProps) => {
   const {
-    setAddPurchaseData
+    isSubmit,
+    setAddPurchaseData,
+    errors
   } = props;
   const { isFetch, setIsFetch } = useApiIndicator();
 
@@ -93,69 +100,89 @@ const AddPurchaseProduct: React.FC<AddPurchaseProductProps> = (props: AddPurchas
     }));
   }, []);
 
+  const totalPrice = useMemo(() => {
+    const sum = addPurchaseProductsData.reduce((acc, purchaseProduct) => acc + ((purchaseProduct.buy_price || 0) * (purchaseProduct.qty || 0)), 0);
+    return toRupiahID(sum);
+  }, [addPurchaseProductsData]);
+
   return (
-    <div className="border-2 border-gray-300 rounded-md p-8">
-      {addPurchaseProductsData.length === 0 ? (
-        AddPurchaseProductButton
-      ) : (
-        <div className="flex flex-col gap-y-6">
-          {addPurchaseProductsData.map((purchaseProduct, index) => (
-            <div
-              key={`add-purchase-product-${index}`}
-              className="inline-grid grid-cols-3 gap-x-10"
-            >
-              {/* Products */}
-              <div className="flex flex-col gap-y-2">
-                <LabelMemo
-                  isLoading={isFetch}
-                  text={'Product'}
-                />
-                <Select
-                  isLoading={isFetch}
-                  isDisabled={isFetch}
-                  options={productsSelect}
-                  onChange={(value) => onProductSelectChange(value, index)}
-                  className="basic-single h-full"
-                  classNamePrefix="select"
-                />
-              </div>
+    <div className="flex flex-col gap-y-2">
+      <div className="border-2 border-gray-300 rounded-md p-8">
+        {addPurchaseProductsData.length === 0 ? (
+          AddPurchaseProductButton
+        ) : (
+          <div className="flex flex-col gap-y-6">
+            {addPurchaseProductsData.map((purchaseProduct, index) => (
+              <div
+                key={`add-purchase-product-${index}`}
+                className="inline-grid grid-cols-3 gap-x-10"
+              >
+                {/* Products */}
+                <div className="flex flex-col gap-y-2">
+                  <LabelMemo
+                    isLoading={isFetch || isSubmit}
+                    text={'Product'}
+                  />
+                  <Select
+                    isLoading={isFetch || isSubmit}
+                    isDisabled={isFetch || isSubmit}
+                    options={productsSelect}
+                    onChange={(value) => onProductSelectChange(value, index)}
+                    className="basic-single h-full"
+                    classNamePrefix="select"
+                  />
+                  <ErrorLabelMemo
+                    {...errors && errors[index] && { error: errors[index].product_id }}
+                  />
+                </div>
 
-              {/* Quantity */}
-              <InputMemo
-                isLoading={isFetch}
-                isDisabled={isFetch}
-                labelText={'Quantity'}
-                type={'number'}
-                name={'qty'}
-                placeholder={'Fill product quantity'}
-                value={purchaseProduct.qty}
-                onChange={(event) => onInputChange(event, index)}
-              />
-
-              <div className="flex items-center gap-x-4">
-                {/* Buy Price */}
+                {/* Quantity */}
                 <InputMemo
-                  isLoading={isFetch}
-                  isDisabled={isFetch}
-                  labelText={'Buy Price'}
+                  isLoading={isFetch || isSubmit}
+                  isDisabled={isFetch || isSubmit}
+                  labelText={'Quantity'}
                   type={'number'}
-                  name={'buy_price'}
-                  placeholder={'Fill product buy price'}
-                  containerClassName="flex-1"
-                  value={purchaseProduct.buy_price}
+                  name={'qty'}
+                  placeholder={'Fill product quantity'}
+                  value={purchaseProduct.qty}
+                  {...errors && errors[index] && { error: errors[index].qty }}
                   onChange={(event) => onInputChange(event, index)}
                 />
-                <AiFillDelete
-                  onClick={() => onDeletePurchaseProductClick(index)}
-                  size={20}
-                  className="text-red-500 cursor-pointer hover:text-red-600"
-                />
+
+                <div className="flex items-center gap-x-4">
+                  {/* Buy Price */}
+                  <InputMemo
+                    isLoading={isFetch || isSubmit}
+                    isDisabled={isFetch || isSubmit}
+                    labelText={'Buy Price'}
+                    type={'number'}
+                    name={'buy_price'}
+                    placeholder={'Fill product buy price'}
+                    containerClassName="flex-1"
+                    value={purchaseProduct.buy_price}
+                    {...errors && errors[index] && { error: errors[index].buy_price }}
+                    onChange={(event) => onInputChange(event, index)}
+                  />
+                  <AiFillDelete
+                    onClick={() => onDeletePurchaseProductClick(index)}
+                    size={20}
+                    className="text-red-500 cursor-pointer hover:text-red-600"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-          {AddPurchaseProductButton}
-        </div>
-      )}
+            ))}
+            {AddPurchaseProductButton}
+          </div>
+        )}
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-lg text-gray-600 font-semibold">
+          Total:
+        </span>
+        <span className="text-lg text-gray-600 font-semibold">
+          {totalPrice}
+        </span>
+      </div>
     </div>
   );
 };

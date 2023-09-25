@@ -8,6 +8,6 @@ export interface AddPurchaseBody {
   purchase_date_time?: string;
   supplier_name?: string;
   purchase_note?: string;
-  purchase_invoice_image_path?: string;
-  products?: string[];
+  purchase_invoice_image?: File;
+  products?: AddPurchaseProductBody[];
 }

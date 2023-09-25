@@ -36,7 +36,7 @@ const AddEditProduct: React.FC = () => {
     setIsSubmit
   } = useApiIndicator();
 
-  const [addEditProductData, setAddEditProductData] = useState<AddEditProductDataProps | undefined>({
+  const [addEditProductData, setAddEditProductData] = useState<AddEditProductDataProps>({
     product_name: '',
     product_sku: '',
     product_desc: '',
@@ -97,15 +97,16 @@ const AddEditProduct: React.FC = () => {
 
     try {
       setIsSubmit(true);
+      setAddEditProductErrors(undefined);
 
       const formData = new FormData();
       product_id && formData.append('_method', 'PUT');
-      formData.append('product_name', addEditProductData?.product_name || '');
-      formData.append('product_sku', addEditProductData?.product_sku || '');
-      formData.append('product_desc', addEditProductData?.product_desc || '');
-      addEditProductData?.product_image && formData.append('product_image', addEditProductData?.product_image);
-      formData.append('qty', addEditProductData?.qty?.toString() || '');
-      formData.append('sell_price', addEditProductData?.sell_price?.toString() || '');
+      addEditProductData.product_name && formData.append('product_name', addEditProductData.product_name);
+      addEditProductData.product_sku && formData.append('product_sku', addEditProductData.product_sku);
+      addEditProductData.product_desc && formData.append('product_desc', addEditProductData.product_desc);
+      addEditProductData.product_image && formData.append('product_image', addEditProductData?.product_image);
+      addEditProductData.qty && formData.append('qty', addEditProductData.qty as any);
+      addEditProductData.sell_price && formData.append('sell_price', addEditProductData?.sell_price as any);
 
       const { data: { status, message } } = await AxiosClient.post<BaseResponse>(`${product_id ? `/products/${product_id}` : '/products'}`, formData, {
         headers: {
@@ -119,27 +120,32 @@ const AddEditProduct: React.FC = () => {
         });
 
         if (!product_id) {
-          setAddEditProductData(undefined);
+          setAddEditProductData({
+            product_name: '',
+            product_sku: '',
+            product_desc: '',
+            qty: 1,
+            sell_price: 1
+          });
           setAddEditProductErrors(undefined);
           setIsResetPreviewImage(true);
         }
       }
     } catch (error: any) {
-      const errors = error as AxiosError<{ message: string, errors: any }>;
-      const { response } = errors;
+      const err = error as AxiosError<{ message: string, errors: any }>;
+      const { response } = err;
 
       if (response) {
         const { message, errors } = response.data;
 
         if (response.status === 422) {
-          setAddEditProductErrors(prevState => ({
-            ...prevState,
+          setAddEditProductErrors({
             ...errors.product_name && { product_name: errors.product_name[0] },
             ...errors.product_sku && { product_sku: errors.product_sku[0] },
             ...errors.product_desc && { product_desc: errors.product_desc[0] },
             ...errors.qty && { qty: errors.qty[0] },
             ...errors.sell_price && { sell_price: errors.sell_price[0] }
-          }));
+          });
         }
 
         SweetAlert.fire({

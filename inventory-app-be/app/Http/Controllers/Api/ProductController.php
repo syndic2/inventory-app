@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Exception;
 
@@ -79,6 +80,8 @@ class ProductController extends Controller
     private function insertOrUpdate(InsertUpdateProductRequest $request, $productId = null)
     {
         try {
+            DB::beginTransaction();
+
             $data = $request->validated();
             $user = Auth::user();
 
@@ -100,12 +103,15 @@ class ProductController extends Controller
                 $productImage  = $request->file('product_image');
                 $productImagePath = is_null($productId) ?
                     CloudinaryStorage::upload($productImage->getRealPath(), $productImage->getClientOriginalName()) :
-                    CloudinaryStorage::replace($product->image, $productImage->getRealPath(), $productImage->getClientOriginalName());;
+                    CloudinaryStorage::replace($product->image, $productImage->getRealPath(), $productImage->getClientOriginalName());
                 $lastInsertedProduct = Product::findOrFail($product->product_id);
                 $lastInsertedProduct->product_image_path =  $productImagePath;
                 $lastInsertedProduct->save();
             }
+
+            DB::commit();
         } catch (Exception $e) {
+            DB::rollBack();
             return response([
                 'status' => false,
                 'message' => $e->getMessage(),

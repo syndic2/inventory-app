@@ -2,8 +2,12 @@ import { IAudit } from './audit.interface';
 
 export interface IPurchaseProduct {
   product_id?: string;
+  product_name?: string;
+  product_sku?: string;
+  product_image_path?: string;
   qty?: number;
   buy_price?: number;
+  total?: number;
 }
 
 export interface IPurchase extends IAudit {

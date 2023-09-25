@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\PurchaseProduct;
+
 class Purchase extends Model
 {
     use HasFactory, SoftDeletes;
@@ -24,4 +26,9 @@ class Purchase extends Model
         'total_qty',
         'grand_total'
     ];
+
+    public function products()
+    {
+        return $this->hasMany(PurchaseProduct::class, 'purchase_id', 'purchase_id');
+    }
 }

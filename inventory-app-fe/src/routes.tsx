@@ -10,6 +10,7 @@ import Product from './views/product/Product';
 import AddEditProduct from './views/product/add-edit-product/AddEditProduct';
 import Purchase from './views/purchase/Purchase';
 import AddPurchase from './views/purchase/add-purchase/AddPurchase';
+import DetailPurchase from './views/purchase/detail-purchase/DetailPurchase';
 import Sale from './views/sale/Sale';
 import AddSale from './views/sale/add-sale/AddSale';
 import HistoryTransaction from './views/history-transaction/HistoryTransaction';
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: '/purchase/add',
         element: <AddPurchase />
+      },
+      {
+        path: '/purchase/detail/:purchase_id',
+        element: <DetailPurchase />
       },
       {
         path: '/sale',

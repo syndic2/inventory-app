@@ -51,6 +51,7 @@ Route::prefix('purchases')
     ->middleware('auth:sanctum')
     ->group(function () {
         Route::get('/', [PurchaseController::class, 'index']);
+        Route::get('{purchase_id}', [PurchaseController::class, 'detail']);
         Route::post('/', [PurchaseController::class, 'insert']);
     });
 

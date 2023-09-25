@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -19,6 +20,8 @@ class AuthController extends Controller
     public function signUp(SignUpRequest $request)
     {
         try {
+            DB::beginTransaction();
+
             $data = $request->validated();
 
             /** @var User */
@@ -30,7 +33,10 @@ class AuthController extends Controller
                 'password' => Hash::make($data['password'])
             ]);
             $token = $user->createToken('main')->plainTextToken;
+
+            DB::commit();
         } catch (Exception $e) {
+            DB::rollback();
             return response([
                 'status' => false,
                 'message' => $e->getMessage(),

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { AiOutlinePlus } from 'react-icons/ai';
+import { useNavigate, Link } from 'react-router-dom';
+import { AiOutlinePlus, AiFillEye } from 'react-icons/ai';
 
 import AxiosClient from '../../libs/axios-client';
 import useApiIndicator from '../../hooks/api-indicator';
@@ -21,11 +21,14 @@ const tableTitles = [
   'Total Product',
   'Total Quantity',
   'Grand Total',
-  'Created At'
+  'Created At',
+  'Action'
 ];
 
 const Purchase: React.FC = () => {
+  const navigate = useNavigate();
   const { isFetch, setIsFetch } = useApiIndicator();
+
   const [purchases, setPurchases] = useState<IPurchase[]>([]);
   const [paginationData, setPaginationData] = useState<PaginatorProps>({ currentPage: 0 });
 
@@ -54,6 +57,11 @@ const Purchase: React.FC = () => {
 
   useEffect(() => {
     fetchPurchases();
+  }, []);
+
+  const onPurchaseDetailClick = useCallback((purchaseId?: string) => {
+    if (!purchaseId) return;
+    navigate(`/purchase/detail/${purchaseId}`);
   }, []);
 
   const onPrevNextPaginatorClick = useCallback((url: string) => {
@@ -127,6 +135,13 @@ const Purchase: React.FC = () => {
             </TableDataMemo>
             <TableDataMemo className="text-center p-3">
               {toDateTime(purchase.created_at, 'DD MMM YYYY hh:mm:ss')}
+            </TableDataMemo>
+            <TableDataMemo>
+              <AiFillEye
+                onClick={() => onPurchaseDetailClick(purchase.purchase_id)}
+                size={24}
+                className="text-cyan-500 cursor-pointer hover:text-cyan-600 m-auto"
+              />
             </TableDataMemo>
           </TableRowMemo>
         ))}
